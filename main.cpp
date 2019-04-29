@@ -8,15 +8,19 @@
 using namespace std;
 
     class contact_node{
+    private:
+        string num;
+        string name;
+        contact_node *next, *prev;
     public:
 
-        std::string name;
-        class numlist{
-            string num;
-            numlist *next, *prev;
+        contact_node(string num, string name){
+            this->num = num;
+            this->name = name;
+            this->prev = NULL;
+            this->next = NULL;
         };
 
-        contact_node *next, *prev;
     };
 
 
