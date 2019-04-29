@@ -8,12 +8,10 @@
 using namespace std;
 
     class contact_node{
-    private:
+    public:
         string num;
         string name;
         contact_node *next, *prev;
-    public:
-
         contact_node(string num, string name){
             this->num = num;
             this->name = name;
