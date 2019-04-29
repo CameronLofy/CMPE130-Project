@@ -28,6 +28,11 @@ using namespace std;
     };
 
 
-    void hash_func(struct name){
+    int hash_func(std::string name){
+        int hash_value;
+        for(int i=0; i<name.length(); i++){
+            hash_value = hash_value + name.at(i);
+        }
 
+        return hash_value;
     }
