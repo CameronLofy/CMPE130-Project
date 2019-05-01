@@ -11,13 +11,12 @@ class contact_node{     // Creating the node for each entry
 public:
     string num;         // String for phone number
     string name;        // String for name (basically the key)
-    contact_node *next, *prev;      // Nodes for chaining
+    contact_node *next;      // Node for chaining
 
     //initializing the contact_node
-    contact_node(string num, string name){
+    contact_node(string name, string num){
         this->num = num;
         this->name = name;
-        this->prev = NULL;
         this->next = NULL;
     };
 
@@ -48,13 +47,64 @@ public:
         for(int i=0; i<name.length(); i++){
             // Add each ASCII value cubed to hash value
             // Cubed to ensure entire table is used
-            hash_value = hash_value + (name.at(i)^3);
+            hash_value = (hash_value + (name.at(i)^3)%size);
         }
 
         return hash_value;
     }
 
     void insert(string name, string num){
+        string parsed_name = name_parse(name);
+        string parsed_num = num_parse(num);
+
+        int hash_val = hash_func(parsed_name);
+
+        contact_node *entry = hash_table[hash_val];
+        contact_node *prev = NULL;
+
+        // Iterate through chain until an empty node is found
+        while(entry != NULL){
+            prev = entry;
+            entry = entry->next;
+        }
+
+        // An empty node has been found
+        entry = new contact_node(parsed_name, parsed_num);
+
+        if(prev == NULL){
+            // Insert node at location in array space
+            hash_table[hash_val] = entry;
+        }
+
+        else{
+            // Link previous node's next value to the new node
+            prev->next = entry;
+        }
+
+    }
+
+    void delete_entry(string name){
+
+    }
+
+    string get(string name){
+        bool retrieved = false;
+
+        string parsed_name = name_parse(name);
+
+        int hash_val = hash_func(parsed_name);
+
+        contact_node *entry = hash_table[hash_val];
+
+        while(entry->name != parsed_name){
+            entry = entry->next;
+            if(entry == NULL){
+                return "Could not find entry. Please try again.";
+            }
+        }
+
+        // Entry found
+        // TODO: Finish code here
 
     }
 
