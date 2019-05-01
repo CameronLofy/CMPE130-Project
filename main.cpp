@@ -107,7 +107,7 @@ public:
 
         // Entry found
 
-        cout<< "Name: "<< format_num(entry->name)<< endl;
+        cout<< "Name: "<< format_name(entry->name)<< endl;
         cout<< "Number: "<< format_num(entry->num)<< endl;
 
     }
@@ -164,6 +164,8 @@ public:
         if(l == ' ' || l == '-' ){
             return true;
         }
+
+        // TODO: if two spaces in entry
         return false;
     }
 };
