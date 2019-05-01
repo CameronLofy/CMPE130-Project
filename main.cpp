@@ -178,19 +178,8 @@ int main(){
 
     cout<< hash.num_parse("(209) 479-8832")<< endl;
 
-    while (1) {
-        cout << "Enter name: ";
-        getline(cin, name);
-        cout<<"\n"<< name;
-        cout << endl << "Enter number: ";
-        getline(cin, num);
-        cout<<"\n"<< num;
 
-        cout << endl;
 
-        hash.insert(name, num);
-
-    }
 
 
 
