@@ -47,10 +47,10 @@ public:
         for(int i=0; i<name.length(); i++){
             // Add each ASCII value cubed to hash value
             // Cubed to ensure entire table is used
-            hash_value = (hash_value + (name.at(i)^3)%size);
+            hash_value = (hash_value + (name.at(i)^3));
         }
 
-        return hash_value;
+        return hash_value%size;
     }
 
     void insert(string name, string num){
@@ -81,6 +81,8 @@ public:
             prev->next = entry;
         }
 
+        cout<< parsed_name<< ", "<< parsed_num <<" inserted!"<<endl;
+
     }
 
     void delete_entry(string name){
@@ -104,7 +106,9 @@ public:
         }
 
         // Entry found
-        // TODO: Finish code here
+
+        cout<< "Name: "<< format_num(entry->name)<< endl;
+        cout<< "Number: "<< format_num(entry->num)<< endl;
 
     }
 
@@ -173,6 +177,23 @@ int main(){
     cout<< hash.name_parse("Cameron Lofy")<< endl;
 
     cout<< hash.num_parse("(209) 479-8832")<< endl;
+
+    while (1) {
+        cout << "Enter name: ";
+        getline(cin, name);
+        cout<<"\n"<< name;
+        cout << endl << "Enter number: ";
+        getline(cin, num);
+        cout<<"\n"<< num;
+
+        cout << endl;
+
+        hash.insert(name, num);
+
+    }
+
+
+
 
 }
 
