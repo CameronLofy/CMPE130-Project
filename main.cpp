@@ -5,6 +5,19 @@
 #include <cstdio>
 #include <stdio.h>
 
+/*To Do:
+-Functions to make:
+-format_name
+-format_num
+-double_size?
+-Testbench with decent sized data set.
+
+Functions to fix:
+-get
+
+Functions to research:
+-Hash function
+
 using namespace std;
 
 class contact_node{     // Creating the node for each entry
@@ -31,6 +44,16 @@ public:
         this->name = name;
         this->next = NULL;
     };
+    
+    void print_all(){
+        contact_node *entry = this;
+        while(next != NULL)
+        {
+            cout<< name << ", "<< num << endl;
+            entry = entry->next;
+        }
+        cout<< name << ", "<< num << endl;
+    }
 };
 
 
@@ -138,6 +161,37 @@ public:
         return;
     }
 
+    contact_node* get(string name){ 
+        string parsed_name = name_parse(name);
+        int hash_val = hash_func(parsed_name);
+
+        contact_node *entry = hash_table[hash_val];
+        
+        contact_node *result;
+        contact_node *temp;
+        
+        if(entry == NULL) return nullptr; //This part keeps segment faulting.
+        // Iterate through chain until an empty node is found
+                    
+        do {
+
+            if(entry->name == parsed_name){
+                temp = new contact_node(entry->name, entry->num);
+                if(result == NULL) result = temp;
+                else{
+                    result->next = temp; //Need to check this is copying and not pointing to the same thing.
+                    result = result->next;
+                }
+            }
+            entry = entry->next;
+        } while(entry->next != NULL);
+        
+        return result;
+    }
+
+
+
+/*
     string get(string name){        // TODO: fix this function
         bool retrieved = false;
 
@@ -159,6 +213,7 @@ public:
         // Entry found
         return (entry->num);
     }
+*/
 
     void list_all(){
         contact_node *entry = NULL;
@@ -238,6 +293,7 @@ int main(){
     hashtable hash;
     string name, num, c;
     string parsed_num;
+    contact_node* cnode;
 
     while(1) {
         cout << "Choose Option:" << endl;
@@ -254,9 +310,8 @@ int main(){
         } else if (c == "2") {
             cout<<"Enter Name: ";
             getline(cin, name);
-            parsed_num = hash.get(name);
-            cout<< "Name: "<< name << endl;
-            cout<< "Number: "<< parsed_num<< endl;
+            cnode = hash.get(name);
+            if(cnode) cnode->print_all();
         } else if (c == "3") {
             cout<<"Enter name to delet: ";
             getline(cin, name);
