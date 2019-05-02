@@ -179,6 +179,15 @@ int main(){
     cout<< hash.num_parse("(209) 479-8832")<< endl;
 
 
+// TODO: TESTING FUNCTIONS
+
+// TODO: UI
+
+// TODO: RETURN ALL ENTRIES - IF TIME PERMITS
+
+// TODO: PHONE NUMBER EXTENSION?
+
+// TODO: DECONSTRUCTOR
 
 
 
