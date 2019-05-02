@@ -10,6 +10,18 @@ using namespace std;
 class contact_node{     // Creating the node for each entry
 public:
     string num;         // String for phone number
+    /*
+        Could be made into a 2d list.
+        1st axis to store each number entry associated with the name.
+        2nd axis to store other info associated to that specific number.
+        If there are multiple numbers associated with the same unique person,
+            you could make sure the numbers were always first in the linklist.
+            That way once it hit a non-numeric character, it would know it got all the numbers for display.
+        Alternately, if the fields of data are static, use an array for each.
+            Depends if most entries are mostly filled out, making an array best,
+            or if a lot of entries have missing data, then linklist might be more efficent.
+        
+    */
     string name;        // String for name (basically the key)
     contact_node *next;      // Node for chaining
 
@@ -19,7 +31,6 @@ public:
         this->name = name;
         this->next = NULL;
     };
-
 };
 
 
@@ -84,6 +95,8 @@ public:
         cout<< parsed_name<< ", "<< parsed_num <<" inserted!"<<endl;
 
     }
+    
+
 
     void delete_entry(string name){
 
@@ -107,13 +120,25 @@ public:
                 return "Could not find entry. Please try again.";
             }
         }
-
         // Entry found
         return (entry->num);
-
-
     }
 
+    void list_all(){
+        contact_node *entry = NULL;
+        int count = 0;
+        for(int i = 0; i < size; i++)
+        {
+            entry = hash_table[i];
+            while(entry != NULL)
+            {
+                cout<< "Entry:"<< entry->name << " " <<entry->num << endl;
+                entry = entry->next;
+                count++;
+            }
+        }
+        cout<< "Count:"<< count << endl;
+    }
 
     string num_parse(string num){
         string out;
@@ -139,7 +164,7 @@ public:
         return upper_out;
     }
 
-    // Format the name string stored to tha hash table to be "First Last" output
+    // Format the name string stored to the hash table to be "First Last" output
     string format_name(string name){
 
     }
@@ -180,7 +205,7 @@ int main(){
 
     while(1) {
         cout << "Choose Option:" << endl;
-        cout << " (1) Insert Entry\n" << " (2) Get Phone Number of Contact\n" << " (3) Delete Contact\n" << " (4) Exit"
+        cout << " (1) Insert Entry\n" << " (2) Get Phone Number of Contact\n" << " (3) Delete Contact\n" << " (4) List All\n" << " (5) Exit"
              << endl;
         getline(cin, c);
         if (c == "1") {
@@ -200,7 +225,9 @@ int main(){
             cout<<"Enter Name: ";
             getline(cin, name);
             hash.delete_entry(name);
-        } else if (c == "4") {
+        } else if (c == "4"){
+            hash.list_all();
+        } else if (c == "5") {
             cout << "Exiting" << endl;
             exit(1);
         }
@@ -210,7 +237,3 @@ int main(){
 
 
 }
-
-
-
-
