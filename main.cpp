@@ -89,7 +89,7 @@ public:
 
     }
 
-    string get(string name){
+    string get(string name){        // TODO: fix this function
         bool retrieved = false;
 
         string parsed_name = name_parse(name);
@@ -97,6 +97,9 @@ public:
         int hash_val = hash_func(parsed_name);
 
         contact_node *entry = hash_table[hash_val];
+        if(entry == NULL){
+            return "could not find entry. Please try a different name.";
+        }
 
         while(entry->name != parsed_name){
             entry = entry->next;
@@ -106,9 +109,8 @@ public:
         }
 
         // Entry found
+        return (entry->num);
 
-        cout<< "Name: "<< format_name(entry->name)<< endl;
-        cout<< "Number: "<< format_num(entry->num)<< endl;
 
     }
 
@@ -173,15 +175,36 @@ public:
 
 int main(){
     hashtable hash;
-    string name, num;
+    string name, num, c;
+    string parsed_num;
 
-    // Just testing toupper function
-    cout<< hash.name_parse("Cameron Lofy")<< endl;
-
-    cout<< hash.num_parse("(209) 479-8832")<< endl;
-
-
-
+    while(1) {
+        cout << "Choose Option:" << endl;
+        cout << " (1) Insert Entry\n" << " (2) Get Phone Number of Contact\n" << " (3) Delete Contact\n" << " (4) Exit"
+             << endl;
+        getline(cin, c);
+        if (c == "1") {
+            cout<<"Enter name to insert: ";
+            getline(cin, name);
+            cout<<endl;
+            cout<<"Enter Number: ";
+            getline(cin, num);
+            hash.insert(name, num);
+        } else if (c == "2") {
+            cout<<"Enter Name: ";
+            getline(cin, name);
+            parsed_num = hash.get(name);
+            cout<< "Name: "<< name << endl;
+            cout<< "Number: "<< parsed_num<< endl;
+        } else if (c == "3") {
+            cout<<"Enter Name: ";
+            getline(cin, name);
+            hash.delete_entry(name);
+        } else if (c == "4") {
+            cout << "Exiting" << endl;
+            exit(1);
+        }
+    }
 
 
 
