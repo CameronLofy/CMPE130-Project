@@ -17,7 +17,7 @@ Functions to fix:
 
 Functions to research:
 -Hash function
-
+*/
 using namespace std;
 
 class contact_node{     // Creating the node for each entry
