@@ -5,6 +5,8 @@
 #include <cstdio>
 #include <stdio.h>
 
+<<<<<<< Updated upstream
+=======
 /*To Do:
 -Functions to make:
 -format_name
@@ -18,6 +20,7 @@ Functions to fix:
 Functions to research:
 -Hash function
 */
+>>>>>>> Stashed changes
 using namespace std;
 
 class info_node{            // Linked List of all corresponding numbers to contact
@@ -40,7 +43,10 @@ public:
         Alternately, if the fields of data are static, use an array for each.
             Depends if most entries are mostly filled out, making an array best,
             or if a lot of entries have missing data, then linklist might be more efficent.
+
+        Maybe have extra nodes for Home phone number, Cell, and work number?
     */
+>>>>>>> Stashed changes
     string name;        // String for name (basically the key)
     contact_node *next;      // Node for chaining
 
@@ -50,7 +56,10 @@ public:
         this->name = name;
         this->next = nullptr;
     };
-    
+<<<<<<< Updated upstream
+
+=======
+
     void print_all(){
         contact_node *entry = this;
         while(next != nullptr)
@@ -60,6 +69,7 @@ public:
         }
         cout<< name << ", "<< num_node->num << endl;
     }
+>>>>>>> Stashed changes
 };
 
 
@@ -141,11 +151,19 @@ public:
         cout<< parsed_name<< ", "<< parsed_num <<" inserted!"<<endl;
 
     }
-    
+<<<<<<< Updated upstream
+
+    void delete_entry(string name){
+
+    }
+
+    string get(string name){
+=======
+
 
     //Requires a number to identify the specific target for deletion,
     //since name keys are not unique.
-    void delete_entry(string name, string num){ 
+    void delete_entry(string name, string num){
         string parsed_name = name_parse(name);
         string parsed_num = num_parse(num);
 
@@ -153,7 +171,7 @@ public:
 
         contact_node *entry = hash_table[hash_val];
         contact_node *prev = nullptr;
-        
+
         if(entry == nullptr)
         {
             cout<< parsed_name<< ", "<< parsed_num <<" was not found."<<endl;
@@ -184,24 +202,24 @@ public:
         return;
     }
 
-    contact_node* get(string name){ 
+    contact_node* get(string name){
         string parsed_name = name_parse(name);
         int hash_val = hash_func(parsed_name);
 
         contact_node *entry = hash_table[hash_val];
-        
+
         contact_node *result;
         contact_node *temp;
         
         if(entry == nullptr) return nullptr; //This part keeps segment faulting.
         // Iterate through chain until an empty node is found
-                    
+
         do {
 
             if(entry->name == parsed_name){
                 // TODO: shouldn't create a new node, only reading values of existing node
-                temp = new contact_node(entry->name, entry->num_node->num);
-                if(result == nullptr) result = temp;
+                temp = new contact_node(entry->name, entry->num);
+                if(result == NULL) result = temp;
                 else{
                     result = temp; //Need to check this is copying and not pointing to the same thing.
                     result = result->next;
@@ -217,6 +235,7 @@ public:
 
 /*
     string get(string name){        // TODO: fix this function
+>>>>>>> Stashed changes
         bool retrieved = false;
 
         string parsed_name = name_parse(name);
@@ -224,9 +243,12 @@ public:
         int hash_val = hash_func(parsed_name);
 
         contact_node *entry = hash_table[hash_val];
+<<<<<<< Updated upstream
+=======
         if(entry == NULL){
             return "could not find entry. Please try a different name.";
         }
+>>>>>>> Stashed changes
 
         while(entry->name != parsed_name){
             entry = entry->next;
@@ -234,6 +256,16 @@ public:
                 return "Could not find entry. Please try again.";
             }
         }
+<<<<<<< Updated upstream
+
+        // Entry found
+
+        cout<< "Name: "<< format_num(entry->name)<< endl;
+        cout<< "Number: "<< format_num(entry->num)<< endl;
+
+    }
+
+=======
         // Entry found
         return (entry->num);
     }
@@ -266,6 +298,7 @@ public:
         }
         cout<< "Contact Count:"<< count << endl;
     }
+>>>>>>> Stashed changes
 
     string num_parse(string num){
         string out;
@@ -291,7 +324,11 @@ public:
         return upper_out;
     }
 
+<<<<<<< Updated upstream
+    // Format the name string stored to tha hash table to be "First Last" output
+=======
     // Format the name string stored to the hash table to be "First Last" output
+>>>>>>> Stashed changes
     string format_name(string name){
 
     }
@@ -318,8 +355,11 @@ public:
         if(l == ' ' || l == '-' ){
             return true;
         }
+<<<<<<< Updated upstream
+=======
 
         // TODO: if two spaces in entry
+>>>>>>> Stashed changes
         return false;
     }
 };
@@ -327,14 +367,38 @@ public:
 
 int main(){
     hashtable hash;
+<<<<<<< Updated upstream
+    string name, num;
+
+    // Just testing toupper function
+    cout<< hash.name_parse("Cameron Lofy")<< endl;
+
+    cout<< hash.num_parse("(209) 479-8832")<< endl;
+
+
+
+
+
+
+
+}
+
+
+
+
+=======
     string name, num, c;
     string parsed_num;
     contact_node* cnode;
 
     while(1) {
         cout << "Choose Option:" << endl;
-        cout << " (1) Insert Entry\n" << " (2) Get Phone Number of Contact\n" << " (3) Delete Contact\n" << " (4) List All\n" << " (5) Exit"
-             << endl;
+        cout << "____________________________________" << endl;
+        cout << "(1) Insert Entry" << endl;
+        cout << "(2) Get Phone Number of Contact" << endl;
+        cout << "(3) Delete Contact" << endl;
+        cout << "(4) List All Entries" << endl;
+        cout << "(5) Exit" << endl;
         getline(cin, c);
         if (c == "1") {
             cout<<"Enter name to insert: ";
@@ -349,7 +413,7 @@ int main(){
             cnode = hash.get(name);
             if(cnode) cnode->print_all();
         } else if (c == "3") {
-            cout<<"Enter name to delet: ";
+            cout<<"Enter name to delete: ";
             getline(cin, name);
             cout<<endl;
             cout<<"Enter Number: ";
@@ -363,3 +427,6 @@ int main(){
         }
     }
 }
+
+// TODO WHEN A CONTACT IS NOT ENTERED, BUT WANT TO DELETE THAT NAME, WE SHOULD THROW AN ERROR
+>>>>>>> Stashed changes
