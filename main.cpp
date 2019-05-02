@@ -33,7 +33,8 @@ public:
         Alternately, if the fields of data are static, use an array for each.
             Depends if most entries are mostly filled out, making an array best,
             or if a lot of entries have missing data, then linklist might be more efficent.
-        
+
+        Maybe have extra nodes for Home phone number, Cell, and work number?
     */
     string name;        // String for name (basically the key)
     contact_node *next;      // Node for chaining
