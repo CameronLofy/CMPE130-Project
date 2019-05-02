@@ -97,9 +97,45 @@ public:
     }
     
 
+    //Requires a number to identify the specific target for deletion,
+    //since name keys are not unique.
+    void delete_entry(string name, string num){ 
+        string parsed_name = name_parse(name);
+        string parsed_num = num_parse(num);
 
-    void delete_entry(string name){
+        int hash_val = hash_func(parsed_name);
 
+        contact_node *entry = hash_table[hash_val];
+        contact_node *prev = NULL;
+        
+        if(entry == NULL)
+        {
+            cout<< parsed_name<< ", "<< parsed_num <<" was not found."<<endl;
+            return;
+        }
+
+        // Iterate through chain until an empty node is found
+        while(entry->name != parsed_name && entry -> num != parsed_num){
+            prev = entry;
+            entry = entry->next;
+            if(entry == NULL)
+            {
+                cout<< parsed_name<< ", "<< parsed_num <<" was not found."<<endl;
+                return;
+            }
+        }
+
+        if(prev == NULL){
+            // Insert node at location in array space
+            hash_table[hash_val] = NULL;
+        }
+
+        // Correct Node has been found.
+        else prev -> next = entry -> next;
+
+        cout<< parsed_name<< ", "<< parsed_num <<" was deleted."<<endl;
+        
+        return;
     }
 
     string get(string name){        // TODO: fix this function
@@ -222,9 +258,12 @@ int main(){
             cout<< "Name: "<< name << endl;
             cout<< "Number: "<< parsed_num<< endl;
         } else if (c == "3") {
-            cout<<"Enter Name: ";
+            cout<<"Enter name to delet: ";
             getline(cin, name);
-            hash.delete_entry(name);
+            cout<<endl;
+            cout<<"Enter Number: ";
+            getline(cin, num);
+            hash.delete_entry(name, num);
         } else if (c == "4"){
             hash.list_all();
         } else if (c == "5") {
@@ -232,8 +271,4 @@ int main(){
             exit(1);
         }
     }
-
-
-
-
 }
