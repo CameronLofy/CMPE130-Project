@@ -177,10 +177,11 @@ public:
         do {
 
             if(entry->name == parsed_name){
+                // TODO: shouldn't create a new node, only reading values of existing node
                 temp = new contact_node(entry->name, entry->num);
                 if(result == NULL) result = temp;
                 else{
-                    result->next = temp; //Need to check this is copying and not pointing to the same thing.
+                    result = temp; //Need to check this is copying and not pointing to the same thing.
                     result = result->next;
                 }
             }
