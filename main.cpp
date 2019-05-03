@@ -128,6 +128,9 @@ public:
 
         contact_node *entry = hash_table[hash_val];
         contact_node *prev = nullptr;
+        
+        info_node *info = nullptr;
+        info_node *iprev = nullptr;
 
         // Iterate through chain until an empty node is found
         while(entry != nullptr && entry->name != parsed_name){
@@ -139,7 +142,27 @@ public:
         if(entry != nullptr)
         {
             if(entry->name == parsed_name)
-                entry->num_node->next_num = new info_node(num);
+            {
+                info = entry->num_node;
+                //Need to traverse contact_node's info_node
+                while(info != nullptr)
+                {
+                    if(info->num == parsed_num)
+                    {
+                        cout<< parsed_name<< ", "<< parsed_num <<" Already Exists!"<<endl;
+                        return;
+                    }
+                    if(info->next_num == nullptr)
+                    {
+                        info->next_num = new info_node(num);
+                        cout<< parsed_name<< ", "<< parsed_num <<" inserted!"<<endl;
+                        return;
+                    }
+                    iprev = info;
+                    info = info->next_num;
+                }
+                info->next_num = new info_node(num);
+            }
         }
         else
             entry = new contact_node(parsed_name, parsed_num);
