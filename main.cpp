@@ -172,9 +172,19 @@ public:
         while(entry != nullptr){
             prev = entry;
             entry = entry->next;
-            if(entry->name == name_parse)
+            if(entry->name == parsed_name)
             {
-                
+                info = entry->num_node;
+                while(info != nullptr)
+                {
+                    cout<< "It gets to info loop" << endl;
+                    if(info->num == parsed_num)
+                    {
+                        iprev->next_num = info->next_num;
+                        cout<< parsed_name << ", "<< parsed_num <<" was deleted."<<endl;
+                    }
+                    info = info->next_num;
+                }
                 cout<< parsed_name<< ", "<< parsed_num <<" was not found."<<endl;
                 return;
             }
