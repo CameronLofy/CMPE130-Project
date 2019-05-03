@@ -157,7 +157,7 @@ public:
         else
             prev->next = entry; // Link previous node's next value to the new node
 
-        cout<< parsed_name<< ", "<< parsed_num <<" inserted!"<<endl;
+        cout<< "Name: " << parsed_name << "\nNumber: " << parsed_num <<"\n" << parsed_name  <<" Has been inserted!"<<endl;
 
     }
 
@@ -341,22 +341,22 @@ int main(){
              << endl;
         getline(cin, c);
         if (c == "1") {
-            cout<<"Enter name to insert: ";
+            cout<<"Enter name to insert: \n";
             getline(cin, name);
             cout<<endl;
-            cout<<"Enter Number: ";
+            cout<<"Enter Number: \n";
             getline(cin, num);
             hash.insert(name, num);
         } else if (c == "2") {
-            cout<<"Enter Name: ";
+            cout<<"Enter Name: \n";
             getline(cin, name);
             cnode = hash.get(name);
             if(cnode) cnode->print_all();
         } else if (c == "3") {
-            cout<<"Enter name to delete: ";
+			cout<<"Enter name to delete: \n";								
             getline(cin, name);
             cout<<endl;
-            cout<<"Enter Number: ";
+            cout<<"Enter Number: \n";
             getline(cin, num);
             hash.delete_entry(name, num);
         } else if (c == "4"){
