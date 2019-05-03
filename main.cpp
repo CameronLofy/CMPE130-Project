@@ -184,6 +184,7 @@ public:
             entry = entry->next;
             if(entry->name == parsed_name)
             {
+			
                 cout<< "It gets to entry loop" << endl;
                 info = entry->num_node;
                 while(info != nullptr)
@@ -197,6 +198,9 @@ public:
                     }
                     info = info->next_num;
                 }
+	   
+				
+												
                 cout<< parsed_name<< ", "<< parsed_num <<" was not found."<<endl;
                 return;
             }
