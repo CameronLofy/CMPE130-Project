@@ -4,6 +4,6 @@ set(HEADER_FILES
 set(SOURCE_FILES
         src/hashtable.cpp)
 include_directories(inc)
-include_directories(googletest-master)
+include_directories(googletest)
 
 add_library(library STATIC ${SOURCE_FILES} ${HEADER_FILES})
