@@ -58,12 +58,17 @@ public:
 
     void print_all(){
         contact_node *entry = this;
-        while(next != nullptr)
+        info_node *info = entry->num_node;
+        while(info != nullptr)
         {
-            cout<< name << ", "<< num_node->num << endl;
-            entry = entry->next;
+            cout<< name << ", "<< info->num << endl;
+            info = info->next_num;
         }
-        cout<< name << ", "<< num_node->num << endl;
+    }
+    
+    void add(string num)
+    {
+        num_node->next_num = new info_node(num);
     }
 };
 
@@ -125,19 +130,24 @@ public:
         contact_node *prev = nullptr;
 
         // Iterate through chain until an empty node is found
-        while(entry != nullptr){
+        while(entry != nullptr && entry->name != parsed_name){
             prev = entry;
             entry = entry->next;
         }
 
         // An empty node has been found
-        entry = new contact_node(parsed_name, parsed_num);
-
+        if(entry != nullptr)
+        {
+            if(entry->name == parsed_name)
+                entry->num_node->next_num = new info_node(num);
+        }
+        else
+            entry = new contact_node(parsed_name, parsed_num);
+        
         if(prev == nullptr){
             // Insert node at location in array space
             hash_table[hash_val] = entry;
         }
-
         else{
             // Link previous node's next value to the new node
             prev->next = entry;
@@ -164,7 +174,7 @@ public:
 
         if(entry == nullptr)
         {
-            cout<< parsed_name<< ", "<< parsed_num <<" was not found."<<endl;
+            cout<< parsed_name<< ", "<< parsed_num <<" was not found. Banana"<<endl;
             return;
         }
 
@@ -174,6 +184,7 @@ public:
             entry = entry->next;
             if(entry->name == parsed_name)
             {
+                cout<< "It gets to entry loop" << endl;
                 info = entry->num_node;
                 while(info != nullptr)
                 {
@@ -182,6 +193,7 @@ public:
                     {
                         iprev->next_num = info->next_num;
                         cout<< parsed_name << ", "<< parsed_num <<" was deleted."<<endl;
+                        return;
                     }
                     info = info->next_num;
                 }
@@ -214,7 +226,17 @@ public:
 
         if(entry == nullptr) return nullptr; //This part keeps segment faulting.
         // Iterate through chain until an empty node is found
-
+        
+        while(entry != nullptr)
+        {
+            if(entry->name == parsed_name)
+                return entry;
+            else
+                entry = entry->next;
+        }
+        
+        return nullptr;
+/*
         do {
 
             if(entry->name == parsed_name){
@@ -230,6 +252,7 @@ public:
         } while(entry->next != nullptr);
 
         return result;
+*/
     }
 
 
