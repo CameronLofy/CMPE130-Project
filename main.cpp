@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <cstdlib>
 #include <cstring>
+#include <string>
 #include <cstdio>
 #include <stdio.h>
 
@@ -93,7 +94,7 @@ public:
 
     // Function to return a hash value for each entry
     // Adds up ASCII values of each number
-    int hash_func(std::string name){
+    int hash_func(string name){
         int hash_value;
         for(int i=0; i<name.length(); i++){
             // Add each ASCII value cubed to hash value
