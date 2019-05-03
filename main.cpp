@@ -157,7 +157,6 @@ public:
 
     }
 
-
     //Requires a number to identify the specific target for deletion,
     //since name keys are not unique.
     void delete_entry(string name, string num){
@@ -169,22 +168,19 @@ public:
         contact_node *entry = hash_table[hash_val];
         contact_node *prev = nullptr;
         
-        info_node *info = entry->num_node;
+        info_node *info = nullptr;
         info_node *iprev = nullptr;
 
         if(entry == nullptr)
         {
-            cout<< parsed_name<< ", "<< parsed_num <<" was not found. Banana"<<endl;
+            cout<< parsed_name<< ", "<< parsed_num <<" was not found."<<endl;
             return;
         }
 
         // Iterate through chain until an empty node is found
         while(entry != nullptr){
-            prev = entry;
-            entry = entry->next;
             if(entry->name == parsed_name)
             {
-			
                 cout<< "It gets to entry loop" << endl;
                 info = entry->num_node;
                 while(info != nullptr)
@@ -192,31 +188,39 @@ public:
                     cout<< "It gets to info loop" << endl;
                     if(info->num == parsed_num)
                     {
-                        iprev->next_num = info->next_num;
-                        cout<< parsed_name << ", "<< parsed_num <<" was deleted."<<endl;
-                        return;
+                        if(iprev == nullptr && info->next_num == nullptr)
+                        {
+                            if(prev == nullptr && entry->next == nullptr)
+                                hash_table[hash_val] = nullptr;
+                            else if(prev == nullptr)
+                                hash_table[hash_val] = entry->next;
+                            else
+                                prev->next = entry->next;
+                            cout<< parsed_name << ", "<< parsed_num <<" was deleted 1."<<endl;
+                            return;
+                        }
+                        else if(iprev == nullptr)
+                        {
+                            entry->num_node = info->next_num;
+                            cout<< parsed_name << ", "<< parsed_num <<" was deleted 2."<<endl;
+                            return;
+                        }
+                        else
+                        {
+                            iprev->next_num = info->next_num;
+                            cout<< parsed_name << ", "<< parsed_num <<" was deleted 3."<<endl;
+                            return;
+                        }
                     }
+                    iprev = info;
                     info = info->next_num;
                 }
-	   
-				
-												
-                cout<< parsed_name<< ", "<< parsed_num <<" was not found."<<endl;
-                return;
             }
+            prev = entry;
+            entry = entry->next;
         }
-
-        if(prev == nullptr){
-            // Insert node at location in array space
-            hash_table[hash_val] = nullptr;
-        }
-
-        // Correct Node has been found.
-        else prev -> next = entry -> next;
-
-        cout<< parsed_name<< ", "<< parsed_num <<" was deleted."<<endl;
-
-        return;
+        
+        cout<< parsed_name<< ", "<< parsed_num <<" was not found."<<endl;
     }
 
     contact_node* get(string name){
@@ -258,32 +262,6 @@ public:
         return result;
 */
     }
-
-
-
-/*
-    string get(string name){        // TODO: fix this function
-        bool retrieved = false;
-
-        string parsed_name = name_parse(name);
-
-        int hash_val = hash_func(parsed_name);
-
-        contact_node *entry = hash_table[hash_val];
-        if(entry == NULL){
-            return "could not find entry. Please try a different name.";
-        }
-
-        while(entry->name != parsed_name){
-            entry = entry->next;
-            if(entry == NULL){
-                return "Could not find entry. Please try again.";
-            }
-        }
-        // Entry found
-        return (entry->num);
-    }
-*/
 
     void list_all(){
         contact_node *entry = nullptr;
@@ -336,7 +314,6 @@ public:
     string format_name(string name){
 
     }
-
 
     // Format the number string to be (xxx) xxx-xxxx output
     string format_num(string num){
