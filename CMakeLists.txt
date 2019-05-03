@@ -1,6 +1,29 @@
-# cmake_minimum_required(VERSION <specify CMake version here>)
-project(cmpe_130)
+cmake_minimum_required(VERSION 3.9)
+project(lab10test)
 
-set(CMAKE_CXX_STANDARD 14)
+if(WIN32)
+    if (CYGWIN)
+        add_definitions(-std=gnu++0x)
+    elseif(MINGW)
+        add_definitions(-std=c++11)
+    endif (CYGWIN)
+endif(WIN32)
+if(APPLE)
+    add_definitions(-DGTEST_USE_OWN_TR1_TUPLE)
+    add_definitions(-D__GLIBCXX__)
+endif(APPLE)
+if(UNIX)
+    add_definitions(-std=gnu++0x)
+endif(UNIX)
 
-add_executable(cmpe_130 main.cpp)
+set(SOURCE_FILES main.cpp)
+
+add_executable(main ${SOURCE_FILES})
+
+include_directories(lib/inc)
+
+add_subdirectory(lib library)
+add_subdirectory(test)
+
+
+target_link_libraries(main library)
