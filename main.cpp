@@ -6,56 +6,44 @@
 #include <stdio.h>
 
 /*To Do:
--Functions to make:
+Functions to make:
 -format_name
 -format_num
--double_size?
 -Testbench with decent sized data set.
-
-Functions to fix:
--get
 
 Functions to research:
 -Hash function
 */
 using namespace std;
 
-class info_node{            // Linked List of all corresponding numbers to contact
+class info_node{	//Stores numbers associated to a specific name. 
 public:
     string num;
     info_node *next_num;
-
+	//Store any additional info here.
+	//Second number would require slight modification
+	
+	//Linklist to store each number.
    info_node(string num){
         this->num = num;
         this->next_num = nullptr;
     }
-
 };
 
-class contact_node{     // Creating the node for each entry
+class contact_node{     // Node used to store each name added to hashtable
 public:
-    info_node *num_node;         // String for phone number
-    /*
-        Could be made into a 2d list.
-        1st axis to store each number entry associated with the name.
-        2nd axis to store other info associated to that specific number.
-        If there are multiple numbers associated with the same unique person,
-            you could make sure the numbers were always first in the linklist.
-            That way once it hit a non-numeric character, it would know it got all the numbers for display.
-        Alternately, if the fields of data are static, use an array for each.
-            Depends if most entries are mostly filled out, making an array best,
-            or if a lot of entries have missing data, then linklist might be more efficent.
-    */
-    string name;        // String for name (basically the key)
-    contact_node *next;      // Node for chaining
+    info_node *num_node;	// String for phone number
+    string name;			// String for name (basically the key)
+    contact_node *next;		// Node for chaining
 
     //initializing the contact_node
     contact_node(string name, string num){
-        this->num_node = new info_node(num);
+        this->num_node = new info_node(num); //Stores numbers associated to the name.
         this->name = name;
         this->next = nullptr;
     };
 
+	//Helper function to print entire node's contents
     void print_all(){
         contact_node *entry = this;
         info_node *info = entry->num_node;
@@ -65,11 +53,6 @@ public:
             info = info->next_num;
         }
     }
-    
-    void add(string num)
-    {
-        num_node->next_num = new info_node(num);
-    }
 };
 
 
@@ -78,7 +61,7 @@ private:
     contact_node **hash_table;      //double pointer to hash table entry at start of chain
 public:
 
-        // Size of table assigned to large prime number
+    // Size of table assigned to large prime number
     unsigned int size = 8963;
 
     // Initializing hash table with an empty hash table and no chaining at nodes yet
@@ -90,6 +73,7 @@ public:
         }
     }
 
+	//Deconstructor
     ~hashtable(){
         for(int i=0; i<size; i++){
             contact_node *entry = hash_table[i];
@@ -108,7 +92,7 @@ public:
     }
 
     // Function to return a hash value for each entry
-    // Adds up ASCII values o each number
+    // Adds up ASCII values of each number
     int hash_func(std::string name){
         int hash_value;
         for(int i=0; i<name.length(); i++){
@@ -116,7 +100,6 @@ public:
             // Cubed to ensure entire table is used
             hash_value = (hash_value + (name.at(i)^3));
         }
-
         return hash_value%size;
     }
 
@@ -132,27 +115,28 @@ public:
         info_node *info = nullptr;
         info_node *iprev = nullptr;
 
-        // Iterate through chain until an empty node is found
+        // Iterate through chain until it finds a matching name or reaches the end of the linklist
         while(entry != nullptr && entry->name != parsed_name){
             prev = entry;
             entry = entry->next;
         }
 
-        // An empty node has been found
+		// Found a match.
         if(entry != nullptr)
         {
+			// Could this if be taken out? Could have been to protect from a nullptr comparison bug.
             if(entry->name == parsed_name)
             {
                 info = entry->num_node;
-                //Need to traverse contact_node's info_node
+                // Need to traverse contact_node's info_node, looking for a match or end of the info_node linklist
                 while(info != nullptr)
                 {
-                    if(info->num == parsed_num)
+                    if(info->num == parsed_num) // Found matching num, info is already present.
                     {
                         cout<< parsed_name<< ", "<< parsed_num <<" Already Exists!"<<endl;
                         return;
                     }
-                    if(info->next_num == nullptr)
+                    if(info->next_num == nullptr) // Add number to the linklist
                     {
                         info->next_num = new info_node(num);
                         cout<< parsed_name<< ", "<< parsed_num <<" inserted!"<<endl;
@@ -161,27 +145,23 @@ public:
                     iprev = info;
                     info = info->next_num;
                 }
-                info->next_num = new info_node(num);
+                info->next_num = new info_node(num); //Catch all
             }
         }
+		// Did not find a name match, prepare entry with new contact_node for insertion
         else
             entry = new contact_node(parsed_name, parsed_num);
         
-        if(prev == nullptr){
-            // Insert node at location in array space
-            hash_table[hash_val] = entry;
-        }
-        else{
-            // Link previous node's next value to the new node
-            prev->next = entry;
-        }
+        if(prev == nullptr)
+            hash_table[hash_val] = entry; // Insert node at location in array space
+        else
+            prev->next = entry; // Link previous node's next value to the new node
 
         cout<< parsed_name<< ", "<< parsed_num <<" inserted!"<<endl;
 
     }
 
-    //Requires a number to identify the specific target for deletion,
-    //since name keys are not unique.
+    //Requires a number to identify the specific target for deletion, since name keys are not unique.
     void delete_entry(string name, string num){
         string parsed_name = name_parse(name);
         string parsed_num = num_parse(num);
@@ -194,44 +174,45 @@ public:
         info_node *info = nullptr;
         info_node *iprev = nullptr;
 
+		// No nodes exist, name is not in hashtable.
         if(entry == nullptr)
         {
             cout<< parsed_name<< ", "<< parsed_num <<" was not found."<<endl;
             return;
         }
 
-        // Iterate through chain until an empty node is found
+        // Iterate through chain until list ends
         while(entry != nullptr){
-            if(entry->name == parsed_name)
+            if(entry->name == parsed_name) //Found matching name
             {
-                cout<< "It gets to entry loop" << endl;
                 info = entry->num_node;
+				// Iterate through info_nodes until list ends
                 while(info != nullptr)
                 {
-                    cout<< "It gets to info loop" << endl;
-                    if(info->num == parsed_num)
+                    
+                    if(info->num == parsed_num) //Found matching number
                     {
-                        if(iprev == nullptr && info->next_num == nullptr)
+                        if(iprev == nullptr && info->next_num == nullptr) //Only number in list, delete contact_node
                         {
-                            if(prev == nullptr && entry->next == nullptr)
+                            if(prev == nullptr && entry->next == nullptr) //Only contact_node, set array space to null
                                 hash_table[hash_val] = nullptr;
-                            else if(prev == nullptr)
+                            else if(prev == nullptr)	//First contact node, set it's next to be first.
                                 hash_table[hash_val] = entry->next;
-                            else
+                            else //in the middle or end of contact_node list
                                 prev->next = entry->next;
-                            cout<< parsed_name << ", "<< parsed_num <<" was deleted 1."<<endl;
+                            cout<< parsed_name << ", "<< parsed_num <<" was deleted."<<endl;
                             return;
                         }
-                        else if(iprev == nullptr)
+                        else if(iprev == nullptr) //First number in info_node linklist, set second node to be first.
                         {
                             entry->num_node = info->next_num;
-                            cout<< parsed_name << ", "<< parsed_num <<" was deleted 2."<<endl;
+                            cout<< parsed_name << ", "<< parsed_num <<" was deleted."<<endl;
                             return;
                         }
-                        else
+                        else //Node in the middle or end, delete it from list.
                         {
                             iprev->next_num = info->next_num;
-                            cout<< parsed_name << ", "<< parsed_num <<" was deleted 3."<<endl;
+                            cout<< parsed_name << ", "<< parsed_num <<" was deleted."<<endl;
                             return;
                         }
                     }
@@ -242,7 +223,7 @@ public:
             prev = entry;
             entry = entry->next;
         }
-        
+        //Could not find, must not exist.
         cout<< parsed_name<< ", "<< parsed_num <<" was not found."<<endl;
     }
 
@@ -255,9 +236,9 @@ public:
         contact_node *result;
         contact_node *temp;
 
-        if(entry == nullptr) return nullptr; //This part keeps segment faulting.
-        // Iterate through chain until an empty node is found
+        if(entry == nullptr) return nullptr;
         
+        // Iterate through chain, checking for matches
         while(entry != nullptr)
         {
             if(entry->name == parsed_name)
@@ -265,27 +246,10 @@ public:
             else
                 entry = entry->next;
         }
-        
         return nullptr;
-/*
-        do {
-
-            if(entry->name == parsed_name){
-                // TODO: shouldn't create a new node, only reading values of existing node
-                temp = new contact_node(entry->name, entry->num_node->num);
-                if(result == nullptr) result = temp;
-                else{
-                    result = temp; //Need to check this is copying and not pointing to the same thing.
-                    result = result->next;
-                }
-            }
-            entry = entry->next;
-        } while(entry->next != nullptr);
-
-        return result;
-*/
     }
 
+	//Just iterates through entire hashtable, contact_node, and info_node, printing out info.
     void list_all(){
         contact_node *entry = nullptr;
         info_node *info = nullptr;
@@ -303,7 +267,6 @@ public:
                     count++;
                 }
                 entry = entry->next;
-                
             }
         }
         cout<< "Contact Count:"<< count << endl;
@@ -335,7 +298,7 @@ public:
 
     // Format the name string stored to the hash table to be "First Last" output
     string format_name(string name){
-
+		
     }
 
     // Format the number string to be (xxx) xxx-xxxx output
@@ -390,7 +353,7 @@ int main(){
             cnode = hash.get(name);
             if(cnode) cnode->print_all();
         } else if (c == "3") {
-            cout<<"Enter name to delet: ";
+            cout<<"Enter name to delete: ";
             getline(cin, name);
             cout<<endl;
             cout<<"Enter Number: ";
