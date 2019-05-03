@@ -25,6 +25,11 @@ public:
     string num;
     info_node *next_num;
 
+   info_node(string num){
+        this->num = num;
+        this->next_num = nullptr;
+    }
+
 };
 
 class contact_node{     // Creating the node for each entry
@@ -46,7 +51,7 @@ public:
 
     //initializing the contact_node
     contact_node(string name, string num){
-        this->num_node->num = num;
+        this->num_node = new info_node(num);
         this->name = name;
         this->next = nullptr;
     };
@@ -153,6 +158,9 @@ public:
 
         contact_node *entry = hash_table[hash_val];
         contact_node *prev = nullptr;
+        
+        info_node *info = entry->num_node;
+        info_node *iprev = nullptr;
 
         if(entry == nullptr)
         {
@@ -161,11 +169,12 @@ public:
         }
 
         // Iterate through chain until an empty node is found
-        while(entry->name != parsed_name && entry -> num_node->num != parsed_num){
+        while(entry != nullptr){
             prev = entry;
             entry = entry->next;
-            if(entry == nullptr)
+            if(entry->name == name_parse)
             {
+                
                 cout<< parsed_name<< ", "<< parsed_num <<" was not found."<<endl;
                 return;
             }
@@ -241,27 +250,22 @@ public:
 
     void list_all(){
         contact_node *entry = nullptr;
+        info_node *info = nullptr;
         int count = 0;
         for(int i = 0; i < size; i++)
         {
             entry = hash_table[i];
             while(entry != nullptr)
             {
-                cout<< "Entry:"<< entry->name << endl;
-                if(entry->num_node->next_num != nullptr){
-                    cout<<"All numbers related to contact:" <<endl;
-                    info_node *temp = entry->num_node;
-
-                    while(temp != nullptr){
-                        cout<<"     "<< format_num(temp->num)<<endl;
-                        temp = temp->next_num;
-                    }
-                }
-                else if(entry->num_node->next_num == nullptr){
-                    cout<<"Number: "<< format_num(entry->num_node->num)<<endl;
+                info = entry->num_node;
+                while(info != nullptr)
+                {
+                    cout<< entry->name << ":" << info->num << endl;
+                    info = info->next_num;
+                    count++;
                 }
                 entry = entry->next;
-                count++;
+                
             }
         }
         cout<< "Contact Count:"<< count << endl;
