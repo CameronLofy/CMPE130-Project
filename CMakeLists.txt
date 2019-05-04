@@ -26,4 +26,4 @@ add_subdirectory(lib library)
 add_subdirectory(test)
 
 
-target_link_libraries(main library)
+#target_link_libraries(main library)

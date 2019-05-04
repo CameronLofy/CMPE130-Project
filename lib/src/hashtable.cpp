@@ -16,7 +16,7 @@ namespace lib{
         }
     }
 
-    contact_node* hashtable::get(string name) {}
+    contact_node* hsshtable::get(string name) {}
 
     hashtable::~hashtable(){
         for(int i=0; i<size; i++){
