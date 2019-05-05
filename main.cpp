@@ -9,6 +9,7 @@
 #include <iomanip>
 #include <fstream>
 
+
 using namespace std;
 using namespace std::chrono; 
 
@@ -422,8 +423,8 @@ int main(){
 
 
 //Start Testing Code
-    ifstream inFile("TestFile.txt");
-    ofstream outFile("Results.txt");
+    ifstream inFile("/TestFile.txt");
+    ofstream outFile("/Results.txt");
     string strOneLine;
 
     while (inFile)
