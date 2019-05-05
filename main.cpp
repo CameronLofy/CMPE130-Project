@@ -319,7 +319,7 @@ void hashtable::list_all(){
             info = entry->num_node;
             while(info != nullptr)
             {
-                cout<< format_name(entry->name) << ":" << format_num(info->num) << endl;
+                cout<< format_name(entry->name) << ": " << format_num(info->num) << endl;
                 info = info->next_num;
                 count++;
             }
@@ -413,7 +413,7 @@ void contact_node::print_all(){
     info_node *info = entry->num_node;
     while(info != nullptr)
     {
-        cout<< hashtable.format_name(name) << ", "<< info->num << endl;
+        cout<< hashtable.format_name(name) << ", "<< hashtable.format_num(info->num) << endl;
         info = info->next_num;
     }
 }
@@ -449,12 +449,19 @@ int main(){
             cout<<endl;
 
             cnode = hash.get(name);
-            if(cnode->num_node->next_num != nullptr){
-
+            // If no other numbers associated with contact, then delete contact
+            if(cnode->num_node->next_num == nullptr){
+                string del_num = cnode->num_node->num;
+                hash.delete_entry(name, del_num);
             }
-            cout<<"Enter Number: \n";
-            getline(cin, num);
-            hash.delete_entry(name, num);
+
+            else{
+                cnode->print_all();
+                cout<< "Delete which number? Enter number: \n";
+                getline(cin, num);
+                hash.delete_entry(name, num);
+            }
+
         } else if (c == "4"){
             hash.list_all();
         } else if (c == "5") {
