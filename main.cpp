@@ -5,17 +5,10 @@
 #include <string>
 #include <cstdio>
 #include <stdio.h>
+#include <chrono> 
 
-/*To Do:
-Functions to make:
--format_name
--format_num
--Testbench with decent sized data set.
-
-Functions to research:
--Hash function
-*/
 using namespace std;
+using namespace std::chrono; 
 
 class info_node{	//Stores numbers associated to a specific name. 
 public:
@@ -425,6 +418,34 @@ int main(){
     string parsed_num;
     contact_node* cnode;
 
+    ifstream inFile("TestFile.txt");
+    ofstream outFile("Results.txt");
+    string strOneLine;
+
+    while (inFile)
+    {
+        getline(inFile, strOneLine);
+        cout << strOneLine << endl;
+       
+        auto start = high_resolution_clock::now(); 
+        hash.insert(strOneLine, to_string((rand() % 9999999999) + 1));
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start);
+        outFile << strOneLine << ", " << duration.count() << ", ";
+        cout << "Time taken by insert function: " << duration.count() << " microseconds" << endl; 
+       
+        start = high_resolution_clock::now(); 
+        hash.get(strOneLine);
+        stop = high_resolution_clock::now();
+        duration = duration_cast<microseconds>(stop - start);
+        outFile << duration.count() << "\n";
+        cout << "Time taken by get function: " << duration.count() << " microseconds" << endl; 
+       
+    }
+
+    inFile.close();
+
+    return 0;
 
     while(1) {
         cout << "Choose Option:" << endl;
