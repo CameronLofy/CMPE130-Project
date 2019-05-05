@@ -8,6 +8,8 @@
 
 //using namespace std;  //Not sure why this is getting errors
 namespace lib {
+
+
     hashtable::hashtable() {                    // Not sure why hashtable is undeclared
         hash_table = new contact_node *[size];
         // Create empty hash table
