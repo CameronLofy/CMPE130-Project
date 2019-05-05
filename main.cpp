@@ -324,8 +324,17 @@ public:
 
     // Format the name string stored to the hash table to be "First Last" output
     string format_name(string name){
-
-		
+        string formatted_name;
+        formatted_name += (toupper(name[0]));
+        for(int i=1; i<name.size(); i++){
+            if(name[i-1] == ' '){
+                formatted_name += toupper(name[i]);
+            }
+            else {
+                formatted_name += tolower(name[i]);
+            }
+        }
+        return formatted_name;
     }
 
     // Format the number string to be (xxx) xxx-xxxx output
@@ -343,14 +352,9 @@ public:
 
     // Check whether character name input is a letter or other valid name character such as "-"
     bool is_letter(char l){
-        if((l >='a' && l <= 'z') || (l >= 'A' && l<= 'Z')){
+        if((l >='a' && l <= 'z') || (l >= 'A' && l<= 'Z') || l == '-'){
             return true;
         }
-        if(l == '-' ){
-            return true;
-        }
-
-        // TODO: if two spaces in entry
         return false;
     }
 };
@@ -362,9 +366,17 @@ int main(){
     string parsed_num;
     contact_node* cnode;
 
+    string test = "cameron  lofy the third    or Whatever    lol";
+    string parsed_test = hash.name_parse(test);
+    string formatted_name = hash.format_name(parsed_test);
+    cout<<test<<endl;
+    cout<<parsed_test<<endl;
+    cout<<formatted_name<<endl;
+
+
     while(1) {
         cout << "Choose Option:" << endl;
-        cout << " (1) Insert Entry\n" << " (2) Get Phone Number of Contact\n" << " (3) Delete Contact\n" << " (4) List All\n" << " (5) Exit"
+        cout << " (1) Insert Entry\n" << " (2) Get Phone Number(s) of Contact\n" << " (3) Delete Contact\n" << " (4) List All\n" << " (5) Exit"
              << endl;
         getline(cin, c);
         if (c == "1") {
@@ -383,6 +395,11 @@ int main(){
 			cout<<"Enter name to delete: \n";								
             getline(cin, name);
             cout<<endl;
+
+            cnode = hash.get(name);
+            if(cnode->num_node->next_num != nullptr){
+
+            }
             cout<<"Enter Number: \n";
             getline(cin, num);
             hash.delete_entry(name, num);
