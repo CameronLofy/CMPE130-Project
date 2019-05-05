@@ -7,8 +7,8 @@
 
 #include "contact_node.h"
 #include <string>
-using namespace std;
-namespace lib{
+//using namespace std;
+//namespace lib{
     class hashtable{
 
         unsigned int size = 8963;
@@ -30,6 +30,6 @@ namespace lib{
 
 
     };
-}
+//}
 
 #endif //CMPE_130_HASHTABLE_H

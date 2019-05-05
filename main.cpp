@@ -252,8 +252,8 @@ public:
 
         contact_node *entry = hash_table[hash_val];
 
-        contact_node *result;
-        contact_node *temp;
+        //contact_node *result;
+        //contact_node *temp;
 
         if(entry == nullptr) return nullptr;
         
@@ -304,9 +304,16 @@ public:
     string name_parse(string name){
         string out;
         string upper_out;
+        char space;
+        bool prev_space = false;
         for(int i=0; i<name.size(); i++){
             if(is_letter(name[i])){
                 out += (name[i]);
+                prev_space = false;
+            }
+            if(name[i] == ' ' && prev_space == false){
+                out += (name[i]);
+                prev_space = true;
             }
         }
         for(int i=0; i<out.size(); i++){
@@ -317,6 +324,7 @@ public:
 
     // Format the name string stored to the hash table to be "First Last" output
     string format_name(string name){
+
 		
     }
 
@@ -338,7 +346,7 @@ public:
         if((l >='a' && l <= 'z') || (l >= 'A' && l<= 'Z')){
             return true;
         }
-        if(l == ' ' || l == '-' ){
+        if(l == '-' ){
             return true;
         }
 
