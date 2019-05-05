@@ -425,17 +425,6 @@ int main(){
     string parsed_num;
     contact_node* cnode;
 
-    string test = "cameron  lofy the third    or Whatever    lol";
-    string parsed_test = hash.name_parse(test);
-    string formatted_name = hash.format_name(parsed_test);
-    cout<<test<<endl;
-    cout<<parsed_test<<endl;
-    cout<<formatted_name<<endl;
-
-    string test_num = "0123456789";
-    string out = hash.format_num(test_num);
-    cout<<out<<endl;
-
 
     while(1) {
         cout << "Choose Option:" << endl;

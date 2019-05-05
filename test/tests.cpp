@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 #include "hashtable.h"
 
-class hashtable : public testing::Test {
+class hashtable_test : public testing::Test {
 
 protected:
     virtual void TearDown(){
