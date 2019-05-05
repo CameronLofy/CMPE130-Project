@@ -6,6 +6,8 @@
 #include <cstdio>
 #include <stdio.h>
 #include <chrono> 
+#include <iomanip>
+#include <fstream>
 
 using namespace std;
 using namespace std::chrono; 
@@ -418,6 +420,8 @@ int main(){
     string parsed_num;
     contact_node* cnode;
 
+
+//Start Testing Code
     ifstream inFile("TestFile.txt");
     ofstream outFile("Results.txt");
     string strOneLine;
@@ -446,6 +450,7 @@ int main(){
     inFile.close();
 
     return 0;
+//End Testing Code
 
     while(1) {
         cout << "Choose Option:" << endl;
