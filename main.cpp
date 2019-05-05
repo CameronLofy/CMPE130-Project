@@ -94,6 +94,7 @@ public:
 
     // Function to return a hash value for each entry
     // Adds up ASCII values of each number
+    /*
     int hash_func(string name){
         int hash_value=0;
         for(int i=0; i<name.length(); i++){
@@ -102,6 +103,20 @@ public:
             hash_value = (hash_value + (name.at(i)^3));
         }
         return hash_value%size;
+    }
+     */
+    // DJB2 Hashing function
+    int hash_func(string name)
+    {
+        unsigned long hash = 5381;
+        int c;
+
+        for(int i=0; i<name.length(); i++) {
+
+            hash = ((hash << 5) + hash) + name.at(i); /* hash * 33 + c */
+        }
+
+        return (hash%size);
     }
 
     void insert(string name, string num){
