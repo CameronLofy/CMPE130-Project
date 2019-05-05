@@ -95,7 +95,7 @@ public:
     // Function to return a hash value for each entry
     // Adds up ASCII values of each number
     int hash_func(string name){
-        int hash_value;
+        int hash_value=0;
         for(int i=0; i<name.length(); i++){
             // Add each ASCII value cubed to hash value
             // Cubed to ensure entire table is used
@@ -146,7 +146,10 @@ public:
                     iprev = info;
                     info = info->next_num;
                 }
-                info->next_num = new info_node(num); //Catch all
+
+                info = new info_node(num); //Catch all
+                iprev->next_num = info;
+
             }
         }
 		// Did not find a name match, prepare entry with new contact_node for insertion
@@ -288,7 +291,7 @@ public:
         string upper_out;
         for(int i=0; i<name.size(); i++){
             if(is_letter(name[i])){
-                out += name[i];
+                out += (name[i]);
             }
         }
         for(int i=0; i<out.size(); i++){

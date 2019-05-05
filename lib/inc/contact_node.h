@@ -21,6 +21,8 @@ public:
         this->name = name;
         this->next = nullptr;
     };
+
+    static void print_all();
 };
 
 #endif //CMPE_130_CONTACT_NODE_H

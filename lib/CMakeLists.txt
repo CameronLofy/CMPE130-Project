@@ -4,7 +4,7 @@ set(HEADER_FILES
         inc/hashtable.h)
 
 set(SOURCE_FILES
-        src/hashtable.cpp)
+        src/hashtable.cpp src/contact_node.cpp)
 include_directories(inc)
 include_directories(test/googletest)
 
