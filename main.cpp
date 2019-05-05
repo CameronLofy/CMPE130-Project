@@ -480,24 +480,29 @@ void hashtable::list_collisions(){
             while(info != nullptr)
             {
                 num_col++;
+                if(info->next_num == nullptr)
+                    num_col--;
+                
                 info = info->next_num;
+                
             }
-            //cout << "Number Collisions: " << max(num_col-1,0) << endl;
-            //tot_num_col = max(num_col-1, 0);
-            //num_col = 0;
+            tot_num_col = tot_num_col + num_col;
+            num_col = 0;
+            
             name_col++;
             if(entry->next == nullptr)
                 name_col--;
+                
             entry = entry->next;
         }
-        cout << "Name Collisions: " << name_col << endl;
+        cout << "Entry Collisions: " << name_col << endl;
         tot_name_col = tot_name_col + name_col;
         name_col = 0;
     }
-    cout << "Table Size :" << size << endl;
+    cout << "Table Size: " << size << endl;
     cout << "Count: " << count << endl;
-    cout << "Total Name Collisions: " << tot_name_col << endl;
-    //cout << "Total Num Collisions: " << tot_num_col << endl;
+    cout << "Total Entry Collisions: " << tot_name_col << endl;
+    cout << "Total Name Collisions: " << tot_num_col << endl;
 }
 
 int main(){
