@@ -9,6 +9,7 @@
 #include <iomanip>
 #include <fstream>
 #include <algorithm>
+#include <ctime>
 
 using namespace std;
 using namespace std::chrono; 
@@ -53,11 +54,22 @@ private:
 public:
 
     // Size of table assigned to large prime number
-    unsigned int size = 0;
+    const int primes[17] = {13, 29, 59, 127, 257, 503, 1009, 2027, 4057, 8101, 16217, 32413, 64811, 129629, 258067, 518113, 1032049};
+    unsigned int size = primes[0];
 
+	
     // Initializing hash table with an empty hash table and no chaining at nodes yet
-    hashtable(int s) {
-		size = s;
+    hashtable() {
+        hash_table = new contact_node*[size];
+        // Create empty hash table
+        for(int i=0; i<size; i++){
+            hash_table[i] = nullptr;
+        }
+        count = 0;
+    }
+
+    hashtable(unsigned int input_size) {
+        size = input_size;
         hash_table = new contact_node*[size];
         // Create empty hash table
         for(int i=0; i<size; i++){
@@ -86,22 +98,6 @@ public:
 
     int hash_func(string name);
 
-    // Function to return a hash value for each entry
-    // Adds up ASCII values of each number
-    /*
-    int hash_func(string name){
-        int hash_value=0;
-        for(int i=0; i<name.length(); i++){
-            // Add each ASCII value cubed to hash value
-            // Cubed to ensure entire table is used
-            hash_value = (hash_value + (name.at(i)^3));
-        }
-        return hash_value%size;
-    }
-     */
-    // DJB2 Hashing function
-
-
     void insert(string name, string num);
 
     //Requires a number to identify the specific target for deletion, since name keys are not unique.
@@ -125,15 +121,15 @@ public:
 
     // Check whether character name input is a letter or other valid name character such as "-"
     bool is_letter(char l);
-
+    
     void resize();
-
+    
     void list_collisions();
 };
 
+// DJB2 Hashing function
 int hashtable::hash_func(string name){
     unsigned long hash = 5381;
-    int c;
 
     for(int i=0; i<name.length(); i++) {
 
@@ -330,7 +326,7 @@ void hashtable::list_all(){
             info = entry->num_node;
             while(info != nullptr)
             {
-                cout<< format_name(entry->name) << ": " << format_num(info->num) << endl;
+                cout<< format_name(entry->name) << ":" << format_num(info->num) << endl;
                 info = info->next_num;
                 count++;
             }
@@ -428,14 +424,19 @@ void contact_node::print_all(){
 }
 
 void hashtable::resize(){
-	int mult = 2;
-	hashtable *temp = new hashtable(size*mult);
-
-
+	int x=0;
+	while(primes[x] != size){
+		x++;
+	}
+	x++;
+	size = primes[x];
+	hashtable *temp = new hashtable(size);
+	
+	
 	contact_node *entry = nullptr;
     info_node *info = nullptr;
     //int count = 0;
-    for(int i = 0; i < size; i++)
+    for(int i = 0; i < primes[x-1]; i++)
     {
         entry = hash_table[i];
         while(entry != nullptr)
@@ -451,15 +452,14 @@ void hashtable::resize(){
             entry = entry->next;
         }
     }
-	hash_table = new contact_node*[size*mult];
+	hash_table = new contact_node*[size];
 	hash_table = temp->hash_table;
-
-
+	
+	
     //cout << "Resized from "<< size << " to " << temp->size << endl;
     //cout << "Count:"<< count << " to " << temp->count << endl;
-    size = size*mult;
     //list_all();
-
+	
 }
 
 void hashtable::list_collisions(){
@@ -467,10 +467,10 @@ void hashtable::list_collisions(){
     info_node *info = nullptr;
     int name_col = 0;
     int num_col = 0;
-
+    
     int tot_name_col = 0;
     int tot_num_col = 0;
-
+    
     for(int i = 0; i < size; i++)
     {
         entry = hash_table[i];
@@ -482,17 +482,17 @@ void hashtable::list_collisions(){
                 num_col++;
                 if(info->next_num == nullptr)
                     num_col--;
-
+                
                 info = info->next_num;
-
+                
             }
             tot_num_col = tot_num_col + num_col;
             num_col = 0;
-
+            
             name_col++;
             if(entry->next == nullptr)
                 name_col--;
-
+                
             entry = entry->next;
         }
         cout << "Entry Collisions: " << name_col << endl;
@@ -506,7 +506,7 @@ void hashtable::list_collisions(){
 }
 
 int main(){
-    hashtable hash = hashtable(500);
+    hashtable hash = hashtable();
     string name, num, c;
     string parsed_num;
     contact_node* cnode;
@@ -519,31 +519,37 @@ int main(){
     ofstream outFile("Results.txt");
     string strOneLine;
 
+    auto start_entries = high_resolution_clock::now();
+
     while (inFile)
     {
         getline(inFile, strOneLine);
-        //cout << strOneLine << endl;
+        cout << strOneLine << endl;
        
-        auto start = high_resolution_clock::now(); 
+        auto start = high_resolution_clock::now();
         hash.insert(strOneLine, to_string((rand() % 9999999999) + 1));
         auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<microseconds>(stop - start);
+        auto duration = duration_cast<nanoseconds>(stop - start);
         outFile << strOneLine << ", " << duration.count() << ", ";
-        //cout << "Time taken by insert function: " << duration.count() << " microseconds" << endl;
+        //cout << "Time taken by insert function: " << duration.count() << " nanoseconds" << endl;
        
         start = high_resolution_clock::now(); 
         hash.get(strOneLine);
         stop = high_resolution_clock::now();
-        duration = duration_cast<microseconds>(stop - start);
+        duration = duration_cast<nanoseconds>(stop - start);
         outFile << duration.count() << "\n";
-        //cout << "Time taken by get function: " << duration.count() << " microseconds" << endl;
+        //cout << "Time taken by get function: " << duration.count() << " nanoseconds" << endl;
        
     }
+
+    auto end_entries = high_resolution_clock::now();
+    auto total_duration = duration_cast<milliseconds>(end_entries - start_entries);
+
     //hash.list_all();
-    hash.list_collisions();
+    //hash.list_collisions();
 
     inFile.close();
-
+    cout << "total_duration for insert and get of 100,000 entries: " << total_duration.count() << " milliseconds" <<endl;
     return 0;
 
 //End Testing Code
