@@ -53,11 +53,12 @@ private:
 public:
 
     // Size of table assigned to large prime number
-    unsigned int size = 0;
+    const int primes[17] = {13, 29, 59, 127, 257, 503, 1009, 2027, 4057, 8101, 16217, 32413, 64811, 129629, 258067, 518113, 1032049};
+    unsigned int size = prime[0];
 
+	
     // Initializing hash table with an empty hash table and no chaining at nodes yet
-    hashtable(int s) {
-		size = s;
+    hashtable() {
         hash_table = new contact_node*[size];
         // Create empty hash table
         for(int i=0; i<size; i++){
@@ -412,8 +413,13 @@ void contact_node::print_all(){
 }
 
 void hashtable::resize(){
-	int mult = 2;
-	hashtable *temp = new hashtable(size*mult);
+	int x=0;
+	while(primes[i] != size){
+		i++;
+	}
+	i++;
+	size = primes[i];
+	hashtable *temp = new hashtable(size);
 	
 	
 	contact_node *entry = nullptr;
@@ -435,13 +441,12 @@ void hashtable::resize(){
             entry = entry->next;
         }
     }
-	hash_table = new contact_node*[size*mult];
+	hash_table = new contact_node*[size];
 	hash_table = temp->hash_table;
 	
 	
     //cout << "Resized from "<< size << " to " << temp->size << endl;
     //cout << "Count:"<< count << " to " << temp->count << endl;
-    size = size*mult;
     //list_all();
 	
 }
