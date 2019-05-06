@@ -8,7 +8,7 @@
 #include <chrono> 
 #include <iomanip>
 #include <fstream>
-
+#include <algorithm>
 
 using namespace std;
 using namespace std::chrono; 
@@ -49,18 +49,21 @@ public:
 class hashtable{
 private:
     contact_node **hash_table;      //double pointer to hash table entry at start of chain
+    int count;
 public:
 
     // Size of table assigned to large prime number
-    unsigned int size = 8963;
+    unsigned int size = 0;
 
     // Initializing hash table with an empty hash table and no chaining at nodes yet
-    hashtable() {
+    hashtable(int s) {
+		size = s;
         hash_table = new contact_node*[size];
         // Create empty hash table
         for(int i=0; i<size; i++){
             hash_table[i] = nullptr;
         }
+        count = 0;
     }
 
 	//Deconstructor
@@ -122,10 +125,13 @@ public:
 
     // Check whether character name input is a letter or other valid name character such as "-"
     bool is_letter(char l);
+
+    void resize();
+
+    void list_collisions();
 };
 
-int hashtable::hash_func(string name)
-{
+int hashtable::hash_func(string name){
     unsigned long hash = 5381;
     int c;
 
@@ -183,13 +189,16 @@ void hashtable::insert(string name, string num){
             {
                 if(info->num == parsed_num) // Found matching num, info is already present.
                 {
-                    cout<< format_name(parsed_name)<< ", "<< format_num(parsed_num) <<" Already Exists!"<<endl;
+                    //cout<< format_name(parsed_name)<< ", "<< format_num(parsed_num) <<" Already Exists!"<<endl;
                     return;
                 }
                 if(info->next_num == nullptr) // Add number to the linklist
                 {
                     info->next_num = new info_node(num);
-                    cout<< format_name(parsed_name)<< ", "<< format_num(parsed_num) <<" inserted!"<<endl;
+                    //cout<< format_name(parsed_name)<< ", "<< format_num(parsed_num) <<" inserted!"<<endl;
+                    count++;
+                    if(count > size)
+                        resize();
                     return;
                 }
                 iprev = info;
@@ -210,7 +219,10 @@ void hashtable::insert(string name, string num){
     else
         prev->next = entry; // Link previous node's next value to the new node
 
-    cout<< "Name: " << format_name(parsed_name) << "\nNumber: " << format_num(parsed_num) <<"\n" << format_name(parsed_name) <<" Has been inserted!"<<endl;
+    //cout<< "Name: " << format_name(parsed_name) << "\nNumber: " << format_num(parsed_num) <<"\n" << format_name(parsed_name) <<" Has been inserted!"<<endl;
+    count++;
+    if(count >= size)
+        resize();
 
 }
 
@@ -254,18 +266,21 @@ void hashtable::delete_entry(string name, string num){
                         else //in the middle or end of contact_node list
                             prev->next = entry->next;
                         cout<< format_name(parsed_name) << ", "<< format_num(parsed_num) <<" was deleted."<<endl;
+                        count--;
                         return;
                     }
                     else if(iprev == nullptr) //First number in info_node linklist, set second node to be first.
                     {
                         entry->num_node = info->next_num;
                         cout<< format_name(parsed_name) << ", "<< format_num(parsed_num)<<" was deleted."<<endl;
+                        count--;
                         return;
                     }
                     else //Node in the middle or end, delete it from list.
                     {
                         iprev->next_num = info->next_num;
                         cout<< format_name(parsed_name) << ", "<< format_num(parsed_num) <<" was deleted."<<endl;
+                        count--;
                         return;
                     }
                 }
@@ -373,8 +388,8 @@ string hashtable::format_name(string name){    //Input name must be parsed alrea
 
 // Format the number string to be (xxx) xxx-xxxx output
 string hashtable::format_num(string num){      //Input number must be parsed already
-    num.insert(0, 1, '+');
-    num.insert(1, 1, '1');
+    //num.insert(0, 1, '+');
+    //num.insert(1, 1, '1');
     num.insert(2, 1, ' ');
     num.insert(3, 1, '(');
     num.insert(7, 1, ')');
@@ -401,52 +416,131 @@ bool hashtable::is_letter(char l){
     return false;
 }
 
-
-
 void contact_node::print_all(){
-    hashtable hashtable;
+    //hashtable hash;
     contact_node *entry = this;
     info_node *info = entry->num_node;
     while(info != nullptr)
     {
-        cout<< hashtable.format_name(name) << ", "<< hashtable.format_num(info->num) << endl;
+        cout<< name << ", "<< info->num << endl;
         info = info->next_num;
     }
 }
 
+void hashtable::resize(){
+	int mult = 2;
+	hashtable *temp = new hashtable(size*mult);
+
+
+	contact_node *entry = nullptr;
+    info_node *info = nullptr;
+    //int count = 0;
+    for(int i = 0; i < size; i++)
+    {
+        entry = hash_table[i];
+        while(entry != nullptr)
+        {
+            info = entry->num_node;
+            while(info != nullptr)
+            {
+                //cout << entry->name << " " <<  info->num << endl;
+				temp->insert(entry->name, info->num);
+                info = info->next_num;
+                //count++;
+            }
+            entry = entry->next;
+        }
+    }
+	hash_table = new contact_node*[size*mult];
+	hash_table = temp->hash_table;
+
+
+    //cout << "Resized from "<< size << " to " << temp->size << endl;
+    //cout << "Count:"<< count << " to " << temp->count << endl;
+    size = size*mult;
+    //list_all();
+
+}
+
+void hashtable::list_collisions(){
+    contact_node *entry = nullptr;
+    info_node *info = nullptr;
+    int name_col = 0;
+    int num_col = 0;
+
+    int tot_name_col = 0;
+    int tot_num_col = 0;
+
+    for(int i = 0; i < size; i++)
+    {
+        entry = hash_table[i];
+        while(entry != nullptr)
+        {
+            info = entry->num_node;
+            while(info != nullptr)
+            {
+                num_col++;
+                if(info->next_num == nullptr)
+                    num_col--;
+
+                info = info->next_num;
+
+            }
+            tot_num_col = tot_num_col + num_col;
+            num_col = 0;
+
+            name_col++;
+            if(entry->next == nullptr)
+                name_col--;
+
+            entry = entry->next;
+        }
+        cout << "Entry Collisions: " << name_col << endl;
+        tot_name_col = tot_name_col + name_col;
+        name_col = 0;
+    }
+    cout << "Table Size: " << size << endl;
+    cout << "Count: " << count << endl;
+    cout << "Total Entry Collisions: " << tot_name_col << endl;
+    cout << "Total Name Collisions: " << tot_num_col << endl;
+}
 
 int main(){
-    hashtable hash;
+    hashtable hash = hashtable(500);
     string name, num, c;
     string parsed_num;
     contact_node* cnode;
 
 
 //Start Testing Code
-    ifstream inFile("/TestFile.txt");
-    ofstream outFile("/Results.txt");
+    ifstream inFile("TestFile.txt");
+    if(!inFile)
+        cout << "File Not Found" << endl;
+    ofstream outFile("Results.txt");
     string strOneLine;
 
     while (inFile)
     {
         getline(inFile, strOneLine);
-        cout << strOneLine << endl;
+        //cout << strOneLine << endl;
        
         auto start = high_resolution_clock::now(); 
         hash.insert(strOneLine, to_string((rand() % 9999999999) + 1));
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
         outFile << strOneLine << ", " << duration.count() << ", ";
-        cout << "Time taken by insert function: " << duration.count() << " microseconds" << endl; 
+        //cout << "Time taken by insert function: " << duration.count() << " microseconds" << endl;
        
         start = high_resolution_clock::now(); 
         hash.get(strOneLine);
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop - start);
         outFile << duration.count() << "\n";
-        cout << "Time taken by get function: " << duration.count() << " microseconds" << endl; 
+        //cout << "Time taken by get function: " << duration.count() << " microseconds" << endl;
        
     }
+    //hash.list_all();
+    hash.list_collisions();
 
     inFile.close();
 
@@ -477,19 +571,12 @@ int main(){
             cout<<endl;
 
             cnode = hash.get(name);
-            // If no other numbers associated with contact, then delete contact
-            if(cnode->num_node->next_num == nullptr){
-                string del_num = cnode->num_node->num;
-                hash.delete_entry(name, del_num);
-            }
+            if(cnode->num_node->next_num != nullptr){
 
-            else{
-                cnode->print_all();
-                cout<< "Delete which number? Enter number: \n";
-                getline(cin, num);
-                hash.delete_entry(name, num);
             }
-
+            cout<<"Enter Number: \n";
+            getline(cin, num);
+            hash.delete_entry(name, num);
         } else if (c == "4"){
             hash.list_all();
         } else if (c == "5") {
