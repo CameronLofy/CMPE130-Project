@@ -86,22 +86,6 @@ public:
 
     int hash_func(string name);
 
-    // Function to return a hash value for each entry
-    // Adds up ASCII values of each number
-    /*
-    int hash_func(string name){
-        int hash_value=0;
-        for(int i=0; i<name.length(); i++){
-            // Add each ASCII value cubed to hash value
-            // Cubed to ensure entire table is used
-            hash_value = (hash_value + (name.at(i)^3));
-        }
-        return hash_value%size;
-    }
-     */
-    // DJB2 Hashing function
-
-
     void insert(string name, string num);
 
     //Requires a number to identify the specific target for deletion, since name keys are not unique.
@@ -131,9 +115,9 @@ public:
     void list_collisions();
 };
 
+// DJB2 Hashing function
 int hashtable::hash_func(string name){
     unsigned long hash = 5381;
-    int c;
 
     for(int i=0; i<name.length(); i++) {
 
