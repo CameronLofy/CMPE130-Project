@@ -185,15 +185,15 @@ void hashtable::insert(string name, string num){
             {
                 if(info->num == parsed_num) // Found matching num, info is already present.
                 {
-                    //cout<< format_name(parsed_name)<< ", "<< format_num(parsed_num) <<" Already Exists!"<<endl;
+                    cout<< format_name(parsed_name)<< ", "<< format_num(parsed_num) <<" Already Exists!"<<endl;
                     return;
                 }
                 if(info->next_num == nullptr) // Add number to the linklist
                 {
                     info->next_num = new info_node(num);
-                    //cout<< format_name(parsed_name)<< ", "<< format_num(parsed_num) <<" inserted!"<<endl;
+                    cout<< format_name(parsed_name)<< ", "<< format_num(parsed_num) <<" inserted!"<<endl;
                     count++;
-                    if(count > size)
+                    if(count*2 >= size)
                         resize();
                     return;
                 }
@@ -215,9 +215,9 @@ void hashtable::insert(string name, string num){
     else
         prev->next = entry; // Link previous node's next value to the new node
 
-    //cout<< "Name: " << format_name(parsed_name) << "\nNumber: " << format_num(parsed_num) <<"\n" << format_name(parsed_name) <<" Has been inserted!"<<endl;
+    cout<< "Name: " << format_name(parsed_name) << "\nNumber: " << format_num(parsed_num) <<"\n" << format_name(parsed_name) <<" Has been inserted!"<<endl;
     count++;
-    if(count >= size)
+    if(count*2 >= size)
         resize();
 
 }
@@ -326,7 +326,7 @@ void hashtable::list_all(){
             info = entry->num_node;
             while(info != nullptr)
             {
-                cout<< format_name(entry->name) << ":" << format_num(info->num) << endl;
+                cout<< format_name(entry->name) << ": " << format_num(info->num) << endl;
                 info = info->next_num;
                 count++;
             }
@@ -384,8 +384,8 @@ string hashtable::format_name(string name){    //Input name must be parsed alrea
 
 // Format the number string to be (xxx) xxx-xxxx output
 string hashtable::format_num(string num){      //Input number must be parsed already
-    //num.insert(0, 1, '+');
-    //num.insert(1, 1, '1');
+    num.insert(0, 1, '+');
+    num.insert(1, 1, '1');
     num.insert(2, 1, ' ');
     num.insert(3, 1, '(');
     num.insert(7, 1, ')');
@@ -495,7 +495,7 @@ void hashtable::list_collisions(){
                 
             entry = entry->next;
         }
-        cout << "Entry Collisions: " << name_col << endl;
+        //cout << "Entry Collisions: " << name_col << endl;
         tot_name_col = tot_name_col + name_col;
         name_col = 0;
     }
@@ -524,10 +524,17 @@ int main(){
     while (inFile)
     {
         getline(inFile, strOneLine);
-        cout << strOneLine << endl;
+        //cout << strOneLine << endl;
        
         auto start = high_resolution_clock::now();
-        hash.insert(strOneLine, to_string((rand() % 9999999999) + 1));
+        string rand_num;
+        for(int i=0; i<9; i++){
+            rand_num.append(to_string(rand()%9));
+
+        }
+        //hash.insert(strOneLine, to_string(((rand()+1000000000)^3 % 9999999999) + 1));
+        hash.insert(strOneLine, rand_num);
+
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<nanoseconds>(stop - start);
         outFile << strOneLine << ", " << duration.count() << ", ";
@@ -546,14 +553,21 @@ int main(){
     auto total_duration = duration_cast<milliseconds>(end_entries - start_entries);
 
     //hash.list_all();
-    //hash.list_collisions();
+    hash.list_collisions();
 
     inFile.close();
     cout << "total_duration for insert and get of 100,000 entries: " << total_duration.count() << " milliseconds" <<endl;
     return 0;
 
+
 //End Testing Code
 
+    string rand_num;
+    for(int i=0; i<=9; i++){
+        rand_num.append(to_string((rand()%9)+1));
+
+    }
+    cout<< rand_num<<endl;
     while(1) {
         cout << "Choose Option:" << endl;
         cout << " (1) Insert Entry\n" << " (2) Get Phone Number(s) of Contact\n" << " (3) Delete Contact\n" << " (4) List All\n" << " (5) Exit"
@@ -571,18 +585,31 @@ int main(){
             getline(cin, name);
             cnode = hash.get(name);
             if(cnode) cnode->print_all();
+            else{
+                cout<< "Could not find any numbers connected to name." <<endl;
+            }
         } else if (c == "3") {
-			cout<<"Enter name to delete: \n";								
+            cout<<"Enter name to delete: \n";
             getline(cin, name);
             cout<<endl;
 
             cnode = hash.get(name);
-            if(cnode->num_node->next_num != nullptr){
-
+            if(cnode == nullptr){
+                cout << "Could not find entry, please try again." <<endl;
             }
-            cout<<"Enter Number: \n";
-            getline(cin, num);
-            hash.delete_entry(name, num);
+            // If no other numbers associated with contact, then delete contact
+            else if(cnode->num_node->next_num == nullptr){
+                string del_num = cnode->num_node->num;
+                hash.delete_entry(name, del_num);
+            }
+
+            else{
+                cnode->print_all();
+                cout<< "Delete which number? Enter number: \n";
+                getline(cin, num);
+                hash.delete_entry(name, num);
+            }
+
         } else if (c == "4"){
             hash.list_all();
         } else if (c == "5") {
